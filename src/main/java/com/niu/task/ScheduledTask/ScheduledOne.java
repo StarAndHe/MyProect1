@@ -22,11 +22,11 @@ import java.util.concurrent.TimeUnit;
 @EnableAsync
 @Component
 public class ScheduledOne {
-    public static List<String> list;
-    public static List<List<DayTask>> listTotal = new LinkedList<>();
-    Map<String,Integer> map = new HashMap<>();  //按类型保存最终结果
-    List<DayTask> weekList = new ArrayList<>(); //保存上周数据
-    Integer count = 0;                          //标记map中的元素数量
+    public static List<String> list;            //配置类型数组
+    public static List<List<DayTask>> listTotal;//保存每一天数据
+    Map<String,Integer> map;  //按类型保存最终结果
+    List<DayTask> weekList; //保存上周数据
+    Integer count;      //标记map中的元素数量
 
     @Value("${spring.mail.username}")
     private String from;
@@ -43,11 +43,14 @@ public class ScheduledOne {
 
     @Scheduled(cron = "0 * * ? * MON-SUN")
     public void configureTasks() throws Exception {
-        //System.out.println("当前主线程的线程名为 ："+Thread.currentThread().getName());
+        listTotal = new LinkedList<>();
+        weekList = new ArrayList<>();
+        map = new HashMap<>();
         Date currentDate = new Date();          //当前时间，从第八日0点开始
-        List<DayTask> tList;                    //保存查询到的该类型一个小时的所有记录
         List<Date> lastWeek = new ArrayList<>();//保存要查询哪七天
         DayTask tTask;                          //第一个查询的结果，保存每天查询到的该类型的总任务数
+        List<DayTask> tList;                    //保存查询到的该类型一个小时的所有记录,随后计算排队任务数
+        count = 0;                              //标记map中的元素数量
         Date qDate = DateOperate.dateToWeek(currentDate);//得到一周前的那一天，应该是上周一
         qDate = DateOperate.dateToTodayZero(qDate);      //得到零点零分
         lastWeek.add(qDate);
@@ -64,13 +67,11 @@ public class ScheduledOne {
             dayHours.add(firstHour);
             List<DayTask> writeList = listTotal.get(i);
             for(int k=0; k<list.size(); k++){
-                //System.out.println("求当天总任务数时的日期是 ："+lastWeek.get(i));
                 tTask = dayTaskService.findDayTask(lastWeek.get(i),list.get(k));//求得这一天一个类型的总任务数等数据
                 tTask.setTaskType(list.get(k));                                 //写入类型
                 writeList.add(tTask);                                           //存入这一天对应的List中，随后汇总即可
             }
 
-            // 注意！为了测试时不出现无谓错误，现在17点，所以我只统计5个小时内的数据，确保都在今天，不会和findDaytask()不一致
             for(int j=0; j<23; j++){
                 firstHour = DateOperate.getNextHourTime(firstHour,1);
                 dayHours.add(firstHour);

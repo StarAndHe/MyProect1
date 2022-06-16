@@ -44,6 +44,6 @@ spring:
 ##赋值
 test:
   list: distribute_task,ost_ed,avs_ed
-  val: 100
+  val: 0
 
 
