@@ -25,6 +25,44 @@ public class DateOperate {
 
     }
 
+    //不管那一天重启，都得到上周一的时间
+    public static Date dateToLastMonday( Date mdate){
+        Date fdate = new Date();
+        Long fTime = mdate.getTime() - 7 * 24 * 3600000; //获取时间戳
+        fdate.setTime(fTime);
+        switch (getWeek(fdate)){
+            case "星期一":
+                break;
+            case "星期二":
+                fTime = fdate.getTime() - 1 * 24 * 3600000; //获取时间戳
+                fdate.setTime(fTime);
+                break;
+            case "星期三":
+                fTime = fdate.getTime() - 2 * 24 * 3600000; //获取时间戳
+                fdate.setTime(fTime);
+                break;
+            case "星期四":
+                fTime = fdate.getTime() - 3 * 24 * 3600000; //获取时间戳
+                fdate.setTime(fTime);
+                break;
+            case "星期五":
+                fTime = fdate.getTime() - 4 * 24 * 3600000; //获取时间戳
+                fdate.setTime(fTime);
+                break;
+            case "星期六":
+                fTime = fdate.getTime() - 5 * 24 * 3600000; //获取时间戳
+                fdate.setTime(fTime);
+                break;
+            case "星期日":
+                fTime = fdate.getTime() - 6 * 24 * 3600000; //获取时间戳
+                fdate.setTime(fTime);
+                break;
+        }
+
+        return fdate;
+    }
+
+
     public static Date dateToOneBefore( Date mdate){
 
         Date fdate = new Date();

@@ -1,10 +1,12 @@
 package com.niu.task.Entity;
 
 import lombok.Data;
+
+import java.io.Serializable;
 import java.math.BigInteger;
 
 @Data
-public class DayTask {
+public class DayTask implements Serializable {
 
     private String taskType;
 
